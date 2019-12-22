@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+  <!--  Meta  -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WL | Docs</title>
+  
+  <!--  Styles  -->
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.17.1/build/styles/default.min.css">
+</head>
+<body>
+  
+  <nav id="navbar">
+    <header>
+      WL Documentation
+    </header>
+    <ul>
+      <li><a class="nav-link" href="#Introduction">Introduction</a></li>
+      <li><a class="nav-link" href="#Hello_World">Hello World</a></li>
+      <li><a class="nav-link" href="#Functions">Functions</a></li>
+      <li>
+        <a class="nav-link" href="#Variables">Variables</a>
+        <ul>
+          <li><a class="nav-link-sublist" href="#Declaring_Variables">Declaring Variables</a></li>
+          <li><a class="nav-link-sublist" href="#Variable_Scope">Variable Scope</a></li>
+        </ul>
+      </li>
+      <li><a class="nav-link" href="#Data_Types">Data Types</a></li>
+      <li><a class="nav-link" href="#Reference">Reference</a></li>
+    </ul>
+  </nav>
+  
+  <main id="main-doc">
+    
+    <section id="Introduction" class="main-section">
+      <header>Introduction</header>
+      <p>
+        The Wolfram Language (WL) is a LISP-inspired programming languages that combines symbolic expressions and rule re-writing to create flexible functions.
+      </p>
+      <p>
+        Most of the time, the WL uses a front-end environment called a notebook, which acts like a REPL with instant visualization features. Input cells are grouped with corresponding output cells, and the cells themselves can be operated on as valid input.
+      </p>
+      <p>
+        The basic idea of the WL is that everything in the language is a <code>Symbol</code>, and it's because of the symbolic representation of things that users are highly productive when writing WL code.
+      </p>
+    </section>
+    
+    <section id="Hello_World" class="main-section">
+      <header>Hello World</header>
+      <p>The easiest way to get started using the WL is by using the free cloud sandbox provided by Wolfram. Using the cloud notebook interface, write your first "Hello World" WL code:
+      </p>
+      <pre><code>
+        In[1]:= "Hello World" (*shift enter to evaluate*)
+        Out[1]:= "Hello World"
+      </code></pre>
+    </section>
+    
+    <section id="Functions" class="main-section">
+      <header>Functions</header>
+      <p>
+        Functions are the bread and butter of WL. Everything in the language is a function, and functions can take other functions as parameters. They are defined using a colon and equal sign (<code>:=</code>), also known as <code>SetDelay</code>.  It is the WL implementation of lazy evaluation, where the function definition is not executed until it's called.
+      </p>
+      <p>
+        Functions can be called in a few different ways:
+      </p>
+      <li>Using bracket ( <code>[ ]</code> ) notation</li>
+      <li>Using prefix ( <code>@</code> ) notation</li>
+      <li>Using postfix ( <code>//</code> ) notation</li>
+      <p>
+        The different ways of using functions alters the evaluation stack of the program, and needs to be considered carefully.
+      </p>
+    </section>
+    
+    <section id="Variables" class="main-section">
+      <header>Variables</header>
+      <p>
+        Variables can be any form, but typically follow camelCasing in order to avoid name collisions with System` and various Package` contexts.
+      </p>
+      <p>
+        Some variables begin with a dollar sign ($), and those variables usually represent persistent values across all kernel sessions. These are variables that can permanently alter the application, such as <code>$FrontEnd</code>. It's important that these variables are handled carefully.
+      </p>
+    </section>
+    
+    <section id="Declaring_Variables" class="main-subsection">
+      <header>Declaring Variables</header>
+      <p>
+        Variables can be declared by assigning it a value using an equal sign (=) known as <code>Set</code>. This immediately binds the value to the symbol, and instances of the symbol are replaced with its corresponding value:
+      </p>
+      <pre><code>
+          In[2]:= x = 2
+          Out[2]:= 2
+      </code></pre>
+      <p>
+        Variables can be unset by reassigning the value to a period (.):
+      </p>
+      <pre><code>
+          In[3]:= x =.
+          Out[3]:= x
+       </code></pre>
+     <p>Multple values for variables can be set at the same time, and there are different kinds of values that affect the evaluation stack such as:
+      </p>
+      <li><code>OwnValues</code></li>
+      <li><code>DownValues</code></li>
+      <li><code>UpValues</code></li>
+       <p>
+         All of which can be set individually. But for most cases, <code>OwnValues</code> are all you need: these are the kinds of variables that are intrinsic in other programming languages.
+      </p>
+      <p>
+        Similar to functions, variables can also be declared using <code>SetDelay</code>. This does not immediately bind the value to the variable, but rather waits to evaluate later when it's actually used.
+      </p>
+    </section>
+    
+    <section id="Variable_Scope" class="main-subsection">
+      <header>Variable Scope</header>
+      <p>
+        By default, variables are globally scoped unless otherwise specificed with local scoping constructs. In the WL, these are:
+      </p>
+      <li><code>Module</code></li>
+      <li><code>With</code></li>
+      <li><code>Block</code></li>
+      <p>
+        <code>Module</code> used when you want to localize variables inside your function's body, and those variables will potentially acquire or change their values during the computation. For example:
+      </p>
+      <pre><code>
+        f[x_]:=Module[{y=x^2}, y=y+x;{x,y}]
+      </code></pre>
+      <p>
+        Variables scoped using <code>Module</code> are given unique temporary identifiers at the machine level.
+      </p>
+      <p>
+        <code>Module</code> also has additional advanced uses such as closures (functions with persistent state), or local functions (useful for recursion).
+      </p>
+      <p>
+        <code>With</code> is used to define local constant, which cannot be changed inside the body of your function. For example:
+      </p>
+      <pre><code>
+        f[x_,y_]:= With[{sum = x+y}, {sum*x, sum*y}]
+      </code></pre>
+      <p>
+        Using <code>With</code>, sum gets replaced by its value early on before the body starts evaluating. This is different than <code>Module</code>, where variable entries get replaced by their values in the process of evaluation, just as it would normally happen if the variables were global.
+      </p>
+      <p>
+        <code>With</code> also has additional advanced uses, including code injection at run-time.
+      </p>
+      <p>
+        <code>Block</code> is similar to <code>Module</code> in that the variables defined in the body have the potential to be changed during the course of evaluation. However, unlike <code>Module</code>, <code>Block</code> localized variables to their values and not their names. This in turn affects the evaluation stack, not just the literal occurences of the symbol inside the body of the code.
+      </p>
+    </section>
+    
+    <section id="Data_Types" class="main-section">
+      <header>Data Types</header>
+      <p>
+        WL does not have strict data types, but rather the type of built-in object is symbolically represented as a <code>Head</code>:
+      </p>
+      <pre><code>
+        In[4]:= Head[3]
+        Out[4]:= Integer
+        
+        In[5]:= Head["string"]
+        Out[5]:= String
+        
+        In[6]:= Head[Range[5]]
+        Out[6]:= List
+       </code></pre>
+      <p>
+        WL evaluates or not according to the <code>Head</code> of an expression. Underneath the hood, WL is replacing symbols into their machine counterparts according to their <code>Head</code> representation.
+      </p>
+    </section>
+    
+    <section id="Reference" class="main-section">
+      <header>Reference</header>
+      <p>
+        All of the above information can be found at the following locations:
+      </p>
+      <li><a href="https://reference.wolfram.com">Wolfram Language Documentation</a></li>
+      <li><a href="https://mathematica.stackexchange.com/">Mathematica Stack Exchange</a></li>
+      <li><a href="https://www.wolfram.com/language/fast-introduction-for-programmers/en/">WL: Fast Introduction for Programmers</a></li>
+    </section>
+    
+  </main>
+  
+  <footer>
+  </footer>
+  
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.17.1/build/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+</body>
+</html>
